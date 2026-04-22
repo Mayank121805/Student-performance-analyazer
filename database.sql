@@ -1,9 +1,7 @@
--- Create the database if it doesn't exist
 DROP DATABASE IF EXISTS student_analyzer;
 CREATE DATABASE student_analyzer;
 USE student_analyzer;
 
--- 1. Users Table (Authentication)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -12,7 +10,6 @@ CREATE TABLE users (
     role ENUM('student', 'teacher') NOT NULL
 );
 
--- 2. Students Table
 CREATE TABLE students (
     id INT PRIMARY KEY,
     class_name VARCHAR(50) NOT NULL,
@@ -20,14 +17,12 @@ CREATE TABLE students (
     FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 3. Teachers Table
 CREATE TABLE teachers (
     id INT PRIMARY KEY,
     subject VARCHAR(100) NOT NULL,
     FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 4. Marks Table
 CREATE TABLE marks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
@@ -38,7 +33,6 @@ CREATE TABLE marks (
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );
 
--- 5. Certificates Table
 CREATE TABLE certificates (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
@@ -48,7 +42,6 @@ CREATE TABLE certificates (
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );
 
--- 6. Performance Ratings Table
 CREATE TABLE performance (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
@@ -59,24 +52,12 @@ CREATE TABLE performance (
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
 
-
--- ==========================================
--- MOCK DATA
--- ==========================================
-
--- Standard plain text passwords are being hashed using werkzeug.security.generate_password_hash in python normally
--- For direct SQL mock insertion, we use fake hashes. In testing, logging in with plain text "password" will work if we mock it with a known hash.
--- Using scrypt hash for "password":
--- scrypt:32768:8:1$y6L7kL0gN$0123... (Let's assume the Python app handles authentication, so for testing let's quickly create a hash in python or use plain text check for now? No, the best practice is standard password hash. 
--- Wait, actually Werkzeug's default password hash for "1234" is `scrypt:32768:8:1$r0U8WJz70gK6kP2a$e72b49e1e79606ba33b000dbd0cc3c50f833503b14d23259ceaf2f0ca3f1b40dc88ba271a3375fca9ae384ba68903eabd513b190f848cc8185da195231c50059`
--- Let's use `scrypt:32768:8:1$r0U8WJz70gK6kP2a$e72b49e1e79606ba33b000dbd0cc3c50f833503b14d23259ceaf2f0ca3f1b40dc88ba271a3375fca9ae384ba68903eabd513b190f848cc8185da195231c50059` for password "1234")
-
 INSERT INTO users (id, username, password_hash, name, role) VALUES 
-(1, 't_smith', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Mr. Smith', 'teacher'),
-(2, 't_jones', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Mrs. Jones', 'teacher'),
-(3, 's_john', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'John Doe', 'student'),
-(4, 's_alice', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Alice Wonderland', 'student'),
-(5, 's_bob', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Bob Builder', 'student');
+(1, 'k_bumrah', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Mr. Kuljinder', 'teacher'),
+(2, 'k_padalia', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Mr. Kamlesh ', 'teacher'),
+(3, 'mayank', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Mayank Karki', 'student'),
+(4, 'prajwal', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Prajwal Pandey', 'student'),
+(5, 'ayushmona', 'scrypt:32768:8:1$xsXOIHA763iQPR4U$c798ac786895b6223ad797cb91da2b1aebd0cc222e4d0c35189ee9a2d4145e74689c37ad253289d950c572253f5987e8d5c49a44a4912b612794a7160a3c0768', 'Ayush Bisht', 'student');
 
 INSERT INTO teachers (id, subject) VALUES 
 (1, 'Mathematics'),
