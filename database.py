@@ -13,7 +13,6 @@ def get_db_connection():
             database=url.path.lstrip('/'),
             port=url.port
         )
-
         return connection
 
     except mysql.connector.Error as err:
