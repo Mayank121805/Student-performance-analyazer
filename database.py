@@ -1,16 +1,21 @@
+import os
+from urllib.parse import urlparse
 import mysql.connector
-from config import Config
 
 def get_db_connection():
     try:
+        url = urlparse(os.getenv("MYSQL_URL"))
+
         connection = mysql.connector.connect(
-        host=Config.MYSQL_HOST,
-        user=Config.MYSQL_USER,
-        password=Config.MYSQL_PASSWORD,
-        database=Config.MYSQL_DB,
-        port=Config.MYSQL_PORT
-   )
+            host=url.hostname,
+            user=url.username,
+            password=url.password,
+            database=url.path.lstrip('/'),
+            port=url.port
+        )
+
         return connection
+
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
